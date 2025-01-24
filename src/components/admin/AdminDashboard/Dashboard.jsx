@@ -35,9 +35,9 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [usersRes, requestsRes, completedRes] = await Promise.all([
-          fetch("http://localhost:5000/api/all-users"),
-          fetch("http://localhost:5000/api/request-counts"),
-          axios.get("http://localhost:5000/api/records/count"),
+          fetch(`${API_BASE_URL}/api/all-users`),
+          fetch(`${API_BASE_URL}/api/request-counts`),
+          axios.get(`${API_BASE_URL}/api/records/count`),
         ]);
 
         const usersData = await usersRes.json();

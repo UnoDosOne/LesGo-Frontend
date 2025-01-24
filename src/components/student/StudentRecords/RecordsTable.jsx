@@ -49,7 +49,7 @@ const RecordsTable = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5000/api/get-records-list",
+        `${API_BASE_URL}/api/get-records-list`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

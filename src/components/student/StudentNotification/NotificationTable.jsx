@@ -41,7 +41,7 @@ const NotificationTable = () => {
     }
 
     const eventSource = new EventSource(
-      `http://localhost:5000/api/notifications?token=${token}`
+      `${API_BASE_URL}/api/notifications?token=${token}`
     );
 
     eventSource.onmessage = (event) => {

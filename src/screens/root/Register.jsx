@@ -69,7 +69,7 @@ const Register = ({ setRegister, setRegisterDetails }) => {
 
 			console.log('Mapped Request Data:', mappedValues);
 
-			const response = await axios.post('http://localhost:5000/api/Users', mappedValues);
+			const response = await axios.post(`${API_BASE_URL}/api5000/api/Users`, mappedValues);
 
 			if (response.status === 201) {
 				alert('Registration successful! Please check your email to activate your account.');

@@ -54,7 +54,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/getall-users"
+        `${API_BASE_URL}/api/getall-users`
       );
 
       if (Array.isArray(response?.data?.data)) {
@@ -72,7 +72,7 @@ const UserManagement = () => {
   const handleAddUser = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/add-user",
+        `${API_BASE_URL}/api/add-user`,
         newUser
       );
       
@@ -114,7 +114,7 @@ const UserManagement = () => {
   // Delete user from the backend
   const handleDeleteUser = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/api/delete-user`, { id: id });
+      await axios.post(`${API_BASE_URL}/api/delete-user`, { id: id });
       // setUsers(users.filter((user) => user._id !== id)); // Update state after deletion
 
       if (response.status === 201) {

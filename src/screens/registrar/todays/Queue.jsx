@@ -10,7 +10,7 @@ import credentials from "../../../data/user";
 import QueueList from "../../../components/registrar/QueueList";
 import queueTempData from "../../../data/queueTemp";
 
-const SERVER_BASE_URL = "http://localhost:5000/api";
+const SERVER_BASE_URL = `${API_BASE_URL}/api`;
 
 const Queue = () => {
   const TOTAL_TIME = 0.1 * 60;

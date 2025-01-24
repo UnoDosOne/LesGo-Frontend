@@ -26,7 +26,7 @@ const Sidebar = () => {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const response = await axios.get('http://localhost:5000/api/request', {
+                const response = await axios.get(`${API_BASE_URL}/api/request`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

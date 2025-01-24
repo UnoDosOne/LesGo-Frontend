@@ -21,7 +21,7 @@ const StudentFeedbacks = () => {
       throw new Error('No token found, please log in again.');
     }
 
-    const response = await axios.get('http://localhost:5000/api/qrdata', {
+    const response = await axios.get(`${API_BASE_URL}/api/qrdata`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -35,9 +35,9 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [usersRes, requestsRes, completedRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/api/all-users`),
-          fetch(`${API_BASE_URL}/api/request-counts`),
-          axios.get(`${API_BASE_URL}/api/records/count`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}api/all-users`),
+          fetch(`${import.meta.env.VITE_API_BASE_URL}api/request-counts`),
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}api/records/count`),
         ]);
 
         const usersData = await usersRes.json();

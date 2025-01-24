@@ -58,9 +58,11 @@ const Login = ({ setRegister }) => {
 			setLoading(false);
 			return;
 		}
-
+		
 		try {
-			const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+			console.log(import.meta.env.VITE_API_BASE_URL)
+			console.log(import.meta.env);
+			const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}api/auth/login`, {
 				email: form.email,
 				password: form.password,
 			});

@@ -10,7 +10,7 @@ import credentials from "../../../data/user";
 import QueueList from "../../../components/student/QueueList";
 import queueTempData from "../../../data/queueTemp";
 
-const SERVER_BASE_URL = `${API_BASE_URL}/api`;
+const SERVER_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}api`;
 
 const Queue = () => {
   const TOTAL_TIME = 5 * 60;

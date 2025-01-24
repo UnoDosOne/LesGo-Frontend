@@ -41,7 +41,7 @@ const MyRequest = () => {
   const fetchApprovalRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_BASE_URL}/api/request`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}api/request`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

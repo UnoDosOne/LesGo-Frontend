@@ -81,13 +81,13 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 	const handleClearClick = async (documentType) => {
 		setIsLoading(true);
 		try {
-			await axios.put(`${API_BASE_URL}/api/request/${data._id}`, {
+			await axios.put(`${import.meta.env.VITE_API_BASE_URL}api/request/${data._id}`, {
 				requestStatus: 'Cleared',
 				dType: documentType,
 				rejectItems: validityStates,
 			});
 
-			await axios.post('${API_BASE_URL}/api/addToQueue', {
+			await axios.post(`${import.meta.env.VITE_API_BASE_URL}api/addToQueue`, {
 				studentID: data?.userId?._id,
 				course: data?.userId?.course,
 				firstname: data?.userId?.fName,
@@ -111,7 +111,7 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 	const handleRejectConfirm = async () => {
 		setIsLoading(true);
 		try {
-			await axios.put(`${API_BASE_URL}/api/request/${data._id}`, {
+			await axios.put(`${import.meta.env.VITE_API_BASE_URL}api/request/${data._id}`, {
 				requestStatus: 'Rejected',
 				dType: data.documentType,
 				userid: data.userId._id,
@@ -176,7 +176,7 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 					<div className="p-6">
 						{viewDetail.type === 'file' ? (
 							<img
-								src={`${API_BASE_URL}/api/uploads/${encodeURIComponent(
+								src={`${import.meta.env.VITE_API_BASE_URL}api/uploads/${encodeURIComponent(
 									viewDetail.content.split('\\').pop()
 								)}`}
 								alt={viewDetail.title}

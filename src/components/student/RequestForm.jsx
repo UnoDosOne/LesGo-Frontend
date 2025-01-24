@@ -247,7 +247,7 @@ const RequestForm = ({ isOpen, setIsOpen, data, onBack }) => {
         // Send data to the backend server
         const token = localStorage.getItem("token"); // Retrieve the token from local storage
         const response = await axios.post(
-          `${API_BASE_URL}/api/request`,
+          `${import.meta.env.VITE_API_BASE_URL}api/request`,
           requestData,
           {
             headers: {

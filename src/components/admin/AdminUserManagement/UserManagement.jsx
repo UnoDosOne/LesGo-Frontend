@@ -114,7 +114,7 @@ const UserManagement = () => {
   // Delete user from the backend
   const handleDeleteUser = async (id) => {
     try {
-      await axios.post(`${API_BASE_URL}/api/delete-user`, { id: id });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}api/delete-user`, { id: id });
       // setUsers(users.filter((user) => user._id !== id)); // Update state after deletion
 
       if (response.status === 201) {

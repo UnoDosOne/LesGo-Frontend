@@ -41,7 +41,7 @@ const NotificationTable = () => {
     }
 
     const eventSource = new EventSource(
-      `${API_BASE_URL}/api/notifications?token=${token}`
+      `${import.meta.env.VITE_API_BASE_URL}api/notifications?token=${token}`
     );
 
     eventSource.onmessage = (event) => {

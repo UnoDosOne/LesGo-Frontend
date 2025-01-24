@@ -12,7 +12,7 @@ const Activate = () => {
       const token = searchParams.get("token");
 
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/auth/activate?token=${token}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}api/auth/activate?token=${token}`);
         setMessage(response.data.message);
       } catch (error) {
         setError(error.response?.data?.message || "Activation failed. Please try again.");

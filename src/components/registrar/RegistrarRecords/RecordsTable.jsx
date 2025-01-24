@@ -52,7 +52,7 @@ const RecordsTable = () => {
 				const token = localStorage.getItem('token');
 				if (!token) throw new Error('No token found');
 
-				const response = await axios.get(`${API_BASE_URL}/api/request`, {
+				const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}api/request`, {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 

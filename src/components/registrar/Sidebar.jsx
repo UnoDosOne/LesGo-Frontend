@@ -73,7 +73,7 @@ const Sidebar = () => {
             badgeCount: pendingRequestsCount
         },
         { path: '/registrar/records', label: 'Records', icon: IoIosAlbums },
-        { path: '/registrar/notifications', label: 'Logs', icon: IoIosNotifications },
+        // { path: '/registrar/notifications', label: 'Logs', icon: IoIosNotifications },
     ];
 
     return (
@@ -85,6 +85,13 @@ const Sidebar = () => {
                     <span className="text-[#0b1933]">Queue</span>Ease
                 </h1>
             </div>
+
+            <h2 className="text-gray-700 font-medium text-sm mt-2 ml-16">
+					{`${localStorage.getItem('user') || 'Guest'} - ${localStorage.getItem('userType') || 'Unknown'}`.toUpperCase()}
+			</h2>         
+            <p className="text-gray-500 text-sm text-center mt-2 mb-3">
+                Greetings! Welcome to the Registrar's Dashboard.
+             </p>
 
             {/* Navigation Section */}
             <nav className="p-4">

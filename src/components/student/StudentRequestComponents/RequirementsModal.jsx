@@ -5,7 +5,6 @@ import RequestForm from "../RequestForm";
 const tempData = { client: "Me", name: "CAV", form: {} }; //kagets naman ata kas akong pasabot kyle
 
 const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
-  console.log(data);
   const [resubmitModal, setResubmitModal] = useState(false);
   const [editData, setEditData] = useState(tempData);
   const handleSumbit = () => {
@@ -14,6 +13,7 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
   const handleBack = () => {
     setResubmitModal(false);
   };
+
   if (!resubmitModal && data) {
     return (
       <div

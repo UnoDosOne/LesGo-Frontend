@@ -35,22 +35,23 @@ const RequestClientForm = ({ isOpen, setIsOpen, buttonName, data }) => {
 
   return (
     <div
-      className={`
-        fixed inset-0 z-50 
-        bg-black bg-opacity-60 
-        flex items-center justify-center 
-        transition-all duration-300 
-        p-4
-        ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
-      `}
+    className={`
+      fixed inset-0 z-50 
+      bg-black bg-opacity-60 
+      flex items-center justify-center 
+      transition-all duration-300 
+      p-4
+      ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
+    `}
+  >
+    <div 
+      className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+      style={{ 
+        backgroundColor: colors.white,
+        border: `4px solid ${colors.darkBlue}`,
+        zIndex: 60, 
+      }}
     >
-      <div 
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden"
-        style={{ 
-          backgroundColor: colors.white,
-          border: `4px solid ${colors.darkBlue}`
-        }}
-      >
         {/* Header */}
         <div 
           className="flex justify-between items-center p-4 border-b"

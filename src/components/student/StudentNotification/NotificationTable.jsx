@@ -1,182 +1,113 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Filter, 
-  ArrowUpDown, 
-  CheckCircle, 
-  AlertCircle, 
-  Clock, 
-  FileText, 
-  RefreshCw 
-} from 'lucide-react';
+import React, { useState, useMemo, useEffect } from "react";
+import {
+  Filter,
+  ArrowUpDown,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  FileText,
+  RefreshCw,
+  OctagonX,
+} from "lucide-react";
+import axios from "axios";
 
 const NotificationTypes = {
-  'Request Transfer': {
+  Pending: {
     icon: RefreshCw,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
   },
-  'Re-Schedule Date': {
-    icon: Clock,
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-50'
+  Rejected: {
+    icon: OctagonX,
+    color: "text-red-600",
+    bgColor: "bg-red-50",
   },
-  'Ready Form': {
+  Cleared: {
     icon: FileText,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
-  }
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+  },
 };
 
 const NotificationTable = () => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 2,
-      formType: "Diploma Replacement",
-      dateReceived: "2024-07-21",
-      type: "Rejected",
-      message:
-        "This is to inform you that one of your requests has been rejected due to wrong submission. Please check on the My Request menu for the rejected request.",
-      read: false,
-    },
-    {
-      id: 3,
-      formType: "SF 10",
-      dateReceived: "2024-07-22",
-      type: "Schedule Date",
-      message:
-        "This is to inform you that your schedule has been set for May 25, 2024, at 8:00 AM to 8:15 AM. Failure to attend will void your queue and require rescheduling.",
-      read: true,
-    },
-    {
-      id: 4,
-      formType: "Evaluation",
-      dateReceived: "2024-07-23",
-      type: "You’ve Missed",
-      message:
-        "This is to inform you that you’ve missed your assigned queue attendance. To reschedule, please head to records and click the reschedule button. Note: Your next schedule will be on the day where there is a slot. Failure to attend the new schedule will void your whole request and you will need to do the whole process again.",
-      read: false,
-    },
-    {
-      id: 5,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 6,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 7,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 8,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 9,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 10,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 11,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-    {
-      id: 12,
-      formType: "Transcript of Records",
-      dateReceived: "2024-07-20",
-      type: "Cleared",
-      message:
-        "This is to inform you that your form has been reviewed and cleared. Please check your schedule on the records menu. For QR, check on the feedback menu.",
-      read: false,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found. Please log in.");
+      return;
+    }
+
+    const eventSource = new EventSource(
+      `http://localhost:5000/api/notifications?token=${token}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const newNotification = JSON.parse(event.data);
+      setNotifications((prevNotifications) => [
+        ...prevNotifications,
+        newNotification,
+      ]);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 
   const [filters, setFilters] = useState({
-    type: '',
-    status: '',
-    sortOrder: 'desc'
+    type: "",
+    status: "",
+    sortOrder: "desc",
   });
 
   const filteredNotifications = useMemo(() => {
     return notifications
-      .filter(notification => 
-        (!filters.type || notification.type === filters.type) &&
-        (filters.status === '' || 
-         (filters.status === 'read' && notification.read) ||
-         (filters.status === 'unread' && !notification.read))
+      .filter(
+        (notification) =>
+          (!filters.type || notification.type === filters.type) &&
+          (filters.status === "" ||
+            (filters.status === "read" && notification.read) ||
+            (filters.status === "unread" && !notification.read))
       )
       .sort((a, b) => {
-        const dateA = new Date(a.dateReceived);
-        const dateB = new Date(b.dateReceived);
-        return filters.sortOrder === 'desc' 
-          ? dateB - dateA 
-          : dateA - dateB;
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return filters.sortOrder === "desc" ? dateB - dateA : dateA - dateB;
       });
   }, [notifications, filters]);
 
-  const markAsRead = (id) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, read: true } 
-          : notification
-      )
-    );
+  const markAsRead = async (id) => {
+    try {
+      const request = await axios.put(
+        "http://localhost:5000/api/updateNotification",
+        { id: id }
+      );
+
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === id
+            ? { ...notification, read: true }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderFilterDropdown = (
-    value, 
-    options, 
-    onChange, 
-    placeholder = 'Select Option'
+    value,
+    options,
+    onChange,
+    placeholder = "Select Option"
   ) => (
     <div className="relative">
       <select
@@ -211,7 +142,7 @@ const NotificationTable = () => {
             <span className="text-sm text-gray-600">
               Total Notifications: {filteredNotifications.length}
             </span>
-            <button 
+            <button
               className="text-blue-600 hover:bg-blue-50 p-2 rounded-full"
               onClick={() => window.location.reload()}
             >
@@ -224,28 +155,30 @@ const NotificationTable = () => {
           {/* Filters */}
           <div className="p-4 border-b border-gray-200 grid grid-cols-3 gap-4">
             {renderFilterDropdown(
-              filters.type, 
+              filters.type,
               {
-                'Request Transfer': 'Transfer Requests',
-                'Re-Schedule Date': 'Rescheduling',
-                'Ready Form': 'Form Readiness'
+                Cleared: "Cleared",
+                Pending: "Pending",
+                Rejected: "Rejected",
               },
-              (e) => setFilters(prev => ({ ...prev, type: e.target.value })),
-              'All Notification Types'
+              (e) => setFilters((prev) => ({ ...prev, type: e.target.value })),
+              "All Notification Types"
             )}
-            
+
             {renderFilterDropdown(
               filters.status,
-              { read: 'Read', unread: 'Unread' },
-              (e) => setFilters(prev => ({ ...prev, status: e.target.value })),
-              'Notification Status'
+              { read: "Read", unread: "Unread" },
+              (e) =>
+                setFilters((prev) => ({ ...prev, status: e.target.value })),
+              "Notification Status"
             )}
-            
+
             {renderFilterDropdown(
               filters.sortOrder,
-              { desc: 'Newest First', asc: 'Oldest First' },
-              (e) => setFilters(prev => ({ ...prev, sortOrder: e.target.value })),
-              'Sort Order'
+              { desc: "Newest First", asc: "Oldest First" },
+              (e) =>
+                setFilters((prev) => ({ ...prev, sortOrder: e.target.value })),
+              "Sort Order"
             )}
           </div>
 
@@ -257,7 +190,7 @@ const NotificationTable = () => {
                 <p>No notifications found</p>
               </div>
             ) : (
-              filteredNotifications.map(notification => {
+              filteredNotifications.map((notification) => {
                 const TypeConfig = NotificationTypes[notification.type] || {};
                 const TypeIcon = TypeConfig.icon || AlertCircle;
 
@@ -267,26 +200,32 @@ const NotificationTable = () => {
                     className={`
                       p-4 border-b border-gray-200 flex items-start 
                       hover:bg-gray-50 transition-colors cursor-pointer
-                      ${notification.read ? 'opacity-60' : ''}
+                      ${notification.read ? "opacity-60" : ""}
                     `}
                     onClick={() => markAsRead(notification.id)}
                   >
-                    <div className={`
+                    <div
+                      className={`
                       mr-4 p-2 rounded-full 
-                      ${TypeConfig.bgColor || 'bg-gray-100'}
-                    `}>
-                      <TypeIcon 
-                        className={`w-6 h-6 ${TypeConfig.color || 'text-gray-500'}`} 
+                      ${TypeConfig.bgColor || "bg-gray-100"}
+                    `}
+                    >
+                      <TypeIcon
+                        className={`w-6 h-6 ${
+                          TypeConfig.color || "text-gray-500"
+                        }`}
                       />
                     </div>
-                    
+
                     <div className="flex-grow">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-semibold text-gray-800">
                           {notification.formType}
                         </h3>
                         <span className="text-xs text-gray-500">
-                          {new Date(notification.dateReceived).toLocaleDateString()}
+                          {new Date(
+                            notification.createdAt
+                          ).toLocaleDateString()}
                         </span>
                       </div>
                       <p className="text-sm text-gray-600">

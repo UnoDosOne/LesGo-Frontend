@@ -20,7 +20,7 @@ const Sidebar = () => {
           <img src="/images/lesgologo.png" alt="LesGo Logo" />
         </div>
         <label className="font-inter font-bold text-white text-3xl flex">
-          <p className="text-yellow-500 ">Les</p> <p>Go</p>
+          <p className="text-yellow-500 ">Queue</p> <p>Ease</p>
         </label>
       </div>
 
@@ -34,7 +34,7 @@ const Sidebar = () => {
             <p>Dashboard</p>
           </div>
         </li>
-        <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
+        {/* <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
           <div
             onClick={() => navigate("/admin/queue")}
             className="flex items-center gap-x-2 hover:text-black hover:bg-white hover:translate-x-1 duration-700 p-2 w-56 cursor-pointer rounded-full"
@@ -51,7 +51,7 @@ const Sidebar = () => {
             <IoIosChatboxes className="w-8 h-8 text-yellow-500" />
             <p>Records Management</p>
           </div>
-        </li>
+        </li> */}
         {/* <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
           <div
             onClick={() => navigate("/admin/feedbacks")}
@@ -61,7 +61,7 @@ const Sidebar = () => {
             <p>Feedbacks</p>
           </div>
         </li> */}
-        <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
+        {/* <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
           <div
             onClick={() => navigate("/admin/reports")}
             className="flex items-center gap-x-2 hover:text-black hover:bg-white hover:translate-x-1 duration-700 p-2 w-56 cursor-pointer rounded-full"
@@ -69,7 +69,7 @@ const Sidebar = () => {
             <IoIosStats className="w-8 h-8 text-yellow-500" />
             <p>Reports</p>
           </div>
-        </li>
+        </li> */}
         <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
           <div
             onClick={() => navigate("/admin/user-management")}
@@ -79,7 +79,7 @@ const Sidebar = () => {
             <p>User Management</p>
           </div>
         </li>
-        <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
+        {/* <li className="text-lg text-white flex items-center w-full border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">
           <div
             onClick={() => navigate("/admin/assignment")}
             className="flex items-center gap-x-2 hover:text-black hover:bg-white hover:translate-x-1 duration-700 p-2 w-56 cursor-pointer rounded-full"
@@ -87,7 +87,7 @@ const Sidebar = () => {
             <IoIosPeople className="w-8 h-8 text-yellow-500" />
             <p>Windows Assignment</p>
           </div>
-        </li>
+        </li> */}
       </ul>
       <div className="absolute bottom-10">
         <div className="text-lg text-white flex items-center w-full border-t border-blue-900 border-opacity-25 pl-8 gap-x-2 h-14">

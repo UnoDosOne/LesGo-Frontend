@@ -8,57 +8,75 @@ import {
 	faChevronCircleDown,
 } from '@fortawesome/free-solid-svg-icons';
 
+import MessagesModal from '../../rootComponents/Modals/MessagesModal';
+
 const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
-	const [viewDetail, setViewDetail] = useState(null);
-	const [showRejectionModal, setShowRejectionModal] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [validityStates, setValidityStates] = useState({
-		'Request Form': 'pending',
-		'Student Clearance': 'pending',
-		'Payment Receipt': 'pending',
-	});
+  const [viewDetail, setViewDetail] = useState(null);
+  const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [validityStates, setValidityStates] = useState({
+    'Request Form': 'pending',
+    'Student Clearance': 'pending',
+    'Payment Receipt': 'pending',
+  });
 
-	if (!isOpen || !data) return null;
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-	const handleValidityChange = (type, value) => {
-		setValidityStates((prev) => ({
-			...prev,
-			[type]: value,
-		}));
-	};
+  if (!isOpen || !data) return null;
 
-	const renderValidityDropdown = (type) => {
-		const currentValidity = validityStates[type] || 'select';
+  // Check if any document is marked as invalid
+  const hasInvalidDocuments = Object.values(validityStates).some((state) => state === 'invalid');
 
-		const colors = {
-      select: 'text-slate-500',
-			valid: 'text-green-500',
-			invalid: 'text-red-500',
+  // Check if all required documents have been validated (not pending)
+  const allDocumentsValidated = Object.entries(validityStates)
+  .filter(([type]) => type !== 'Request Form') 
+  .every(([, state]) => state === 'valid');
 
-		};
+  const handleValidityChange = (type, value) => {
+    setValidityStates((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
 
-		return (
-			<div className="relative inline-block w-full">
-				<select
-					className={`appearance-none w-2/3 bg-transparent cursor-pointer rounded-md border p-2 text-sm font-inter ${colors[currentValidity]}`}
-					value={currentValidity}
-					onChange={(e) => handleValidityChange(type, e.target.value)}>
-					<option value="select" className="font-inter text-sm">
-						Select Validity
-					</option>
-					<option value="valid" className="font-inter text-sm">
-						Valid
-					</option>
-					<option value="invalid" className="font-inter text-sm">
-						Invalid
-					</option>
-				</select>
-				<div className="pointer-events-none absolute mr-2 inset-y-0 right-0 flex items-center">
-					<FontAwesomeIcon icon={faChevronCircleDown} className="text-slate-500" />
-				</div>
-			</div>
-		);
-	};
+  const renderValidityDropdown = (type, index) => {
+    const currentValidity = validityStates[type] || 'pending';
+  
+    const colors = {
+      pending: 'text-slate-500',
+      valid: 'text-green-500',
+      invalid: 'text-red-500',
+    };
+  
+    if (index === 0) {
+      return null;
+    }
+  
+    return (
+      <div className="relative inline-block w-full">
+        <select
+          className={`appearance-none w-2/3 bg-transparent cursor-pointer rounded-md border p-2 text-sm font-inter ${colors[currentValidity]}`}
+          value={currentValidity}
+          onChange={(e) => handleValidityChange(type, e.target.value)}>
+          <option value="pending" className="font-inter text-sm">
+            Select Validity
+          </option>
+          <option value="valid" className="font-inter text-sm">
+            Valid
+          </option>
+          <option value="invalid" className="font-inter text-sm">
+            Invalid
+          </option>
+        </select>
+        <div className="pointer-events-none absolute mr-2 inset-y-0 right-0 flex items-center">
+          <FontAwesomeIcon icon={faChevronCircleDown} className="text-slate-500" />
+        </div>
+      </div>
+    );
+  };
+  
+
 
 	const handleClearClick = async (documentType) => {
 		setIsLoading(true);
@@ -66,14 +84,27 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 			await axios.put(`http://localhost:5000/api/request/${data._id}`, {
 				requestStatus: 'Cleared',
 				dType: documentType,
+				rejectItems: validityStates,
 			});
-			alert('Request cleared successfully');
+
+			await axios.post('http://localhost:5000/api/addToQueue', {
+				studentID: data?.userId?._id,
+				course: data?.userId?.course,
+				firstname: data?.userId?.fName,
+				documentType: data?.documentType,
+			});
+
+			setModalMessage('Request Cleared Successfully');
+			setIsModalOpen(true);
+      setValidityStates('');
 			window.location.reload();
 		} catch (error) {
 			alert('Failed to clear request');
+      setValidityStates('');
 			console.error(error);
 		} finally {
 			setIsLoading(false);
+      setValidityStates('');
 		}
 	};
 
@@ -82,14 +113,20 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 		try {
 			await axios.put(`http://localhost:5000/api/request/${data._id}`, {
 				requestStatus: 'Rejected',
+				dType: data.documentType,
+				userid: data.userId._id,
+				rejectItems: validityStates,
 			});
-			alert('Request rejected');
+			setModalMessage('Request Rejected Successfully');
+			setIsModalOpen(true);
+      setValidityStates('');
 			window.location.reload();
 		} catch (error) {
 			alert('Failed to reject request');
 			console.error(error);
 		} finally {
 			setIsLoading(false);
+      setValidityStates('');
 		}
 	};
 
@@ -226,93 +263,117 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 				</div>
 
 				<div className="p-6">
-					<div className="overflow-x-auto">
-						<table className="w-full">
-							<thead>
-								<tr className="bg-gray-50">
-									<th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-										Type Submitted
-									</th>
-									<th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-										Action
-									</th>
-									<th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-										Validity
-									</th>
-								</tr>
-							</thead>
-							<tbody className="divide-y divide-gray-200">
-								{[
-									{
-										type: 'Request Form',
-										details: [
-											{ label: 'Client', value: data.client },
-											{ label: 'Student Name', value: data.userId.fName || 'N/A' },
-											{ label: 'Student ID', value: data.userId.schoolID || 'N/A' },
-											{ label: 'Course', value: data.userId.course || 'N/A' },
-											{ label: 'Document Type', value: data.documentType },
-											{ label: 'Purpose', value: data.purpose || 'N/A' },
-										],
-									},
-									{
-										type: 'Student Clearance',
-										file: data.clearanceFile,
-									},
-									{
-										type: 'Payment Receipt',
-										file: data.proofOfPayment,
-									},
-								].map((row, index) => (
-									<tr key={index}>
-										<td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-											{row.type}
-										</td>
-										<td className="px-4 py-4 whitespace-nowrap text-right">
-											{row.file ? (
-												<button
-													onClick={() =>
-														setViewDetail({
-															title: row.type,
-															content: row.file,
-															type: 'file',
-														})
-													}
-													className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
-													View
-												</button>
-											) : (
-												<button
-													onClick={() =>
-														setViewDetail({
-															title: row.type,
-															content: row.details,
-															type: 'details',
-														})
-													}
-													className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
-													View
-												</button>
-											)}
-										</td>
-										<td className="px-4 py-4 whitespace-nowrap text-right">
-                    {index === 1 || index === 2 ? renderValidityDropdown(row.type) : null}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				</div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Type Submitted
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Action
+              </th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Validity
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {[
+              {
+                type: 'Request Form',
+                details: [
+                  { label: 'Client', value: data.client },
+                  { label: 'Student Name', value: data.userId.fName || 'N/A' },
+                  { label: 'Student ID', value: data.userId.schoolID || 'N/A' },
+                  { label: 'Course', value: data.userId.course || 'N/A' },
+                  { label: 'Document Type', value: data.documentType },
+                  { label: 'Purpose', value: data.purpose || 'N/A' },
+                ],
+              },
+              {
+                type: 'Student Clearance',
+                file: data.clearanceFile,
+              },
+              {
+                type: 'Payment Receipt',
+                file: data.proofOfPayment,
+              },
+              ...(data.authorizationLetter
+                ? [
+                    {
+                      type: 'Authorization Letter',
+                      file: data.authorizationLetter,
+                    },
+                  ]
+                : []),
+              ...(data.authorizingPersonID
+                ? [
+                    {
+                      type: 'Authorizing Person ID',
+                      file: data.authorizingPersonID,
+                    },
+                  ]
+                : []),
+              ...(data.authorizedPersonID
+                ? [
+                    {
+                      type: 'Authorized Person ID',
+                      file: data.authorizedPersonID,
+                    },
+                  ]
+                : []),
+            ].map((row, index) => (
+              <tr key={index}>
+                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {row.type}
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap text-right">
+                  {row.file ? (
+                    <button
+                      onClick={() =>
+                        setViewDetail({
+                          title: row.type,
+                          content: row.file,
+                          type: 'file',
+                        })
+                      }
+                      className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                      View
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        setViewDetail({
+                          title: row.type,
+                          content: row.details,
+                          type: 'details',
+                        })
+                      }
+                      className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                      View
+                    </button>
+                  )}
+                </td>
+                <td className="px-4 py-4 whitespace-nowrap text-right">
+                  {renderValidityDropdown(row.type, index)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+          </div>
+        </div>
 
 				<div className="flex justify-center space-x-4 p-6 border-t border-gray-100">
 					<button
 						onClick={() => setShowRejectionModal(true)}
 						className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg 
-    px-5 py-2.5 text-sm font-medium text-white transition-all duration-300
-    bg-red-600 hover:bg-red-700 
-    focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transform hover:-translate-y-0.5 active:translate-y-0">
+              px-5 py-2.5 text-sm font-medium text-white transition-all duration-300
+              bg-red-600 hover:bg-red-700 
+              focus:ring-2 focus:ring-red-500 focus:ring-offset-2
+              disabled:opacity-50 disabled:cursor-not-allowed
+              transform hover:-translate-y-0.5 active:translate-y-0">
 						<span className="absolute inset-0 bg-red-700 opacity-0 group-hover:opacity-10 transition-opacity"></span>
 						<span className="relative flex items-center space-x-2">
 							<svg
@@ -331,13 +392,21 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 					</button>
 
 					<button
-						onClick={() => handleClearClick(data.documentType)}
+						 onClick={() => handleClearClick(data.documentType)}
+             disabled={hasInvalidDocuments || !allDocumentsValidated}
 						className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg 
-    px-5 py-2.5 text-sm font-medium text-white transition-all duration-300
-    bg-emerald-600 hover:bg-emerald-700 
-    focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed
-    transform hover:-translate-y-0.5 active:translate-y-0">
+              px-5 py-2.5 text-sm font-medium text-white transition-all duration-300
+              bg-emerald-600 hover:bg-emerald-700 
+              focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-emerald-600 disabled:transform-none
+              transform hover:-translate-y-0.5 active:translate-y-0"
+						title={
+							hasInvalidDocuments
+								? 'Cannot clear request with invalid documents'
+								: !allDocumentsValidated
+								? 'Please validate all documents first'
+								: 'Clear request'
+						}>
 						<span className="absolute inset-0 bg-emerald-700 opacity-0 group-hover:opacity-10 transition-opacity"></span>
 						<span className="relative flex items-center space-x-2">
 							<svg
@@ -358,7 +427,6 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 					<button
 						onClick={() => {
 							setIsOpen(false);
-							setValidityStates('');
 						}}
 						className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg 
     px-5 py-2.5 text-sm font-medium text-gray-700 transition-all duration-300
@@ -387,6 +455,11 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
 
 			{renderDetailModal()}
 			{renderRejectionModal()}
+			<MessagesModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				message={modalMessage}
+			/>
 		</div>
 	);
 };

@@ -18,7 +18,7 @@ const ActivateAccount = () => {
 
     setLoading(true); // Start loading
     try {
-      const response = await axios.get(`http://localhost:5000/api/auth/activate?token=${token}`);
+      const response = await axios.get(`http://localhost:5000/api/activate?token=${token}`);
       setMessage(response.data.message || "Your account has been activated successfully!");
       setError(""); // Clear error message
     } catch (err) {

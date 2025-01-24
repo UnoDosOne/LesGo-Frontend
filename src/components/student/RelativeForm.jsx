@@ -107,7 +107,7 @@ const RelativeForm = ({ isOpen, setIsOpen, data, onBack }) => {
                 name="authorizationLetter"
                 onChange={handleChange}
                 accept=".jpg,.jpeg,.png"
-                className="file:mr-4 file:py-2 file:px-4
+                className="file:mr-4 file:py-2 file:px-4 rounded-md
     file:border-0
     file:text-sm file:font-semibold
     file:bg-black file:text-white
@@ -137,7 +137,7 @@ const RelativeForm = ({ isOpen, setIsOpen, data, onBack }) => {
                 type="file"
                 name="authorizingPersonID"
                 onChange={handleChange}
-                className="file:mr-4 file:py-2 file:px-4
+                className="file:mr-4 file:py-2 file:px-4 rounded-md
        file:border-0
       file:text-sm file:font-semibold
       file:bg-black file:text-white
@@ -166,7 +166,7 @@ const RelativeForm = ({ isOpen, setIsOpen, data, onBack }) => {
                 type="file"
                 name="authorizedPersonID"
                 onChange={handleChange}
-                className="file:mr-4 file:py-2 file:px-4
+                className="file:mr-4 file:py-2 file:px-4 rounded-md
        file:border-0
       file:text-sm file:font-semibold
       file:bg-black file:text-white

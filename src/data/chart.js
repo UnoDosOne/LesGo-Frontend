@@ -6,25 +6,18 @@ const dashboardData = {
       totalProcessed: 300
     },
     statistics: [
-      {
-        label: "Total Users",
-        value: 150
-      },
-      {
-        label: "Pending Requests",
-        value: 25
-      },
+
       {
         label: "Completed Requests",
         value: 300
       },
       {
         label: "Average Waiting Time",
-        value: "15 mins"
+        value: "5 mins"
       },
       {
         label: "Requests per Day",
-        value: 50
+        value: 100
       }
     ],
     recentActivities: [

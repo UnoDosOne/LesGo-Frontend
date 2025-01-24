@@ -138,7 +138,7 @@ const Formlist = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-4 md:py-8 max-w-4xl relative">
+    <div>
       <RequestClientForm
         isOpen={showClientForm}
         setIsOpen={() => setShowClientForm(!showClientForm)}
@@ -147,11 +147,8 @@ const Formlist = () => {
         onBack={() => setShowClientForm(false)}
       />
       
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden">
-        <div className="bg-gray-100 p-4 md:p-6 border-b border-gray-200 flex items-center">
-          <div className="text-2xl md:text-3xl text-[#0b1933] mr-3 md:mr-4">
-            <FontAwesomeIcon icon={faBuilding} />
-          </div>
+      <div className="bg-white">
+        <div className="p-4 md:p-6 border-b border-gray-200 flex items-start">
           <h2 className="text-xl md:text-2xl font-bold text-gray-800">
             Service Request Forms
           </h2>

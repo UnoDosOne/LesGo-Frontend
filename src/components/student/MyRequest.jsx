@@ -41,7 +41,7 @@ const MyRequest = () => {
   const fetchApprovalRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_BASE_URL}/api/request`, {
+      const response = await axios.get("http://localhost:5000/api/request", {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -148,16 +148,7 @@ const MyRequest = () => {
         >
           Approval Requests
         </button>
-        <button
-          onClick={() => setCurrentView('resubmission')}
-          className={`px-6 py-2 rounded-md transition ${
-            currentView === 'resubmission' 
-              ? 'bg-[#0b1933] text-white' 
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          Resubmission Requests
-        </button>
+   
       </div>
 
       {currentView === 'approval' ? (
@@ -167,6 +158,7 @@ const MyRequest = () => {
               <tr>
                 <th className="px-6 py-3 text-left">Form Type</th>
                 <th className="px-6 py-3 text-left">Date Submitted</th>
+                <th className="px-6 py-3 text-left">Expected Duration</th>
                 <th className="px-6 py-3 text-left">Status</th>
               </tr>
             </thead>
@@ -177,6 +169,7 @@ const MyRequest = () => {
                   <td className="px-6 py-4">
                     {new Date(request.createdAt).toLocaleDateString()}
                   </td>
+                  <td className="px-6 py-4 text-green-700">{request.expectedDuration}</td>
                   <td className="px-6 py-4">
                     {renderStatusBadge(request.requestStatus)}
                   </td>

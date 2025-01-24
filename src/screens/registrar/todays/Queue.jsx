@@ -13,7 +13,7 @@ import queueTempData from "../../../data/queueTemp";
 const SERVER_BASE_URL = "http://localhost:5000/api";
 
 const Queue = () => {
-  const TOTAL_TIME = 5 * 60;
+  const TOTAL_TIME = 0.1 * 60;
 
   const [countdown, setCountdown] = useState(() => {
     const savedCountdown = localStorage.getItem("queueCountdown");
@@ -25,6 +25,7 @@ const Queue = () => {
     return savedQueueNum ? parseInt(savedQueueNum) : 0;
   });
 
+  const [rawList, setRawList] = useState([]);
   const [queueList, setQueueList] = useState([]);
   const [currentServing, setCurrentServing] = useState({
     displayName: "",
@@ -73,17 +74,19 @@ const Queue = () => {
           throw new Error("Failed to fetch queue list");
         }
         const data = await response.json();
-        setQueueList(data.queueList);
+        setRawList(data);
+        setQueueList(data);
 
         // Set initial current serving if not already set
-        if (data.queueList.length > 0 && queueNum === 0) {
-          const currentToken = data.queueList[0];
-          setQueueNum(currentToken.queueNum);
+        if (data.length > 0) {
+          const currentToken = data[0];
+          setQueueNum(currentToken.counter);
           setCurrentServing({
-            displayName: currentToken.userName,
-            program: currentToken.program,
+            displayName: currentToken.firstname,
+            program: currentToken.course,
           });
-          setQueueList(data.queueList.slice(1));
+
+          setQueueList(data.slice(1));
         }
       } catch (error) {
         console.error("Error fetching queue list:", error);
@@ -157,28 +160,28 @@ const Queue = () => {
   }, [countdown, isTimerRunning, timerStartTime]);
 
   const handleNextToken = async () => {
-    if (queueList.length > 0) {
-      const nextToken = queueList[0];
-      setQueueNum(nextToken.queueNum);
+    if (rawList.length > 0) {
+      const nextToken = rawList[0];
+      setQueueNum(nextToken.counter);
       setCurrentServing({
-        displayName: nextToken.userName,
-        program: nextToken.program,
+        displayName: nextToken.firstname,
+        program: nextToken.course,
       });
-      setQueueList(queueList.slice(1));
       setCountdown(TOTAL_TIME);
       setIsTimerRunning(false);
       setIsTimerComplete(false);
 
       try {
         // Notify server that token was served
-        const response = await fetch(`${SERVER_BASE_URL}/queue/serve`, {
-          method: "POST",
+        const response = await fetch(`${SERVER_BASE_URL}/serve-queue`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ queueNum: nextToken.queueNum }),
+          body: JSON.stringify({ _id: nextToken._id }),
         });
+      
         if (!response.ok) {
           // Handle unauthorized access
           if (response.status === 401) {
@@ -190,11 +193,20 @@ const Queue = () => {
           }
           throw new Error("Failed to update server about served token");
         }
+      
+        // Add this block to handle the OK response and reload the page
+        if (response.ok) {
+          window.location.reload(); // Reload the page if the response is OK
+        }
+      
+        const myResponse = await response.json();
+      
+        localStorage.setItem("queueNum", null);
         // Optionally handle server response
       } catch (error) {
         console.error("Error updating server:", error);
         // Handle error (e.g., show error message to user)
-      }
+      }      
     } else {
       // If queue is empty, reset current serving
       setQueueNum(0);
@@ -288,7 +300,7 @@ const Queue = () => {
                     <button
                       onClick={handleNextToken}
                       className={`
-                        w-12 h-12 rounded-full flex items-center justify-center
+                        w-10 h-10 rounded-full flex items-center justify-center
                         bg-amber-500 hover:bg-amber-600 text-white
                         transition-all duration-300 ease-in-out
                         shadow-md hover:shadow-lg transform hover:scale-105

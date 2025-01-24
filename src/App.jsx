@@ -43,7 +43,6 @@ export default function App() {
         throw error;
       }
     };
-
     fetchFunctionUser();
   }, [navigate]);
 

@@ -53,23 +53,6 @@ const AssignPersonnel = () => {
         </select>
       </div>
 
-      {/* Request Type Selection */}
-      <div className="mb-4">
-        <label className="block font-semibold text-gray-700">Select Request Type:</label>
-        <select
-          value={selectedRequestType}
-          onChange={(e) => setSelectedRequestType(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg w-full"
-        >
-          <option value="">Choose a Request Type</option>
-          {requestTypes.map((request, index) => (
-            <option key={index} value={request}>
-              {request}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Personnel Selection */}
       <div className="mb-4">
         <label className="block font-semibold text-gray-700">Assign Personnel:</label>

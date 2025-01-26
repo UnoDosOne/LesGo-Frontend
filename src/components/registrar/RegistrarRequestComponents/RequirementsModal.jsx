@@ -33,6 +33,8 @@ const RequirementsModal = ({ isOpen, setIsOpen, data }) => {
   .filter(([type]) => type !== 'Request Form') 
   .every(([, state]) => state === 'valid');
 
+  
+
   const handleValidityChange = (type, value) => {
     setValidityStates((prev) => ({
       ...prev,

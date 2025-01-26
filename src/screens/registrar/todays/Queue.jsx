@@ -13,7 +13,7 @@ import queueTempData from "../../../data/queueTemp";
 const SERVER_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}api`;
 
 const Queue = () => {
-  const TOTAL_TIME = 0.1 * 60;
+  const TOTAL_TIME = 5 * 60;
 
   const [countdown, setCountdown] = useState(() => {
     const savedCountdown = localStorage.getItem("queueCountdown");

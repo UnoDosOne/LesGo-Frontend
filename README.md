@@ -5,7 +5,6 @@ A web-based student queuing system built with a **Vite** frontend (React) and an
 ## Features
 - **Frontend**: Built using React (Vite), styled with Tailwind CSS.
 - **Backend**: API server using Express.js and MongoDB with Mongoose.
-- Development environment using `concurrently` to run both frontend and backend.
 - Production build served by Express after the Vite frontend build.
 
 ## Prerequisites

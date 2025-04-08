@@ -71,7 +71,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/<db-name>?retr
 PORT=5000
 ⚠️ Replace <username>, <password>, and <db-name> with your actual MongoDB credentials.
 
-🧪 Running the Application
+## 🧪 Running the Application
 Development Mode (Frontend + Backend Concurrently)
 Start the development servers for both frontend and backend:
 
@@ -109,14 +109,14 @@ MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), ...
 [license text truncated for brevity]
-👤 Author
+## 👤 Author
 UnoDosOne
 
 GitHub: @UnoDosOne
 
 Email: [your.email@example.com]
 
-📬 Feedback or Contributions?
+## 📬 Feedback or Contributions?
 Feel free to submit an issue or pull request. Contributions are always welcome!
 
 python

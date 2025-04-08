@@ -44,6 +44,13 @@ Ensure the following are installed:
 
 ---
 
+## 🛠️ Installation
+
+1. **Clone the repository**
+
+bash
+git clone https://github.com/UnoDosOne/LesGo-WebApp.git
+cd LesGo-WebApp
 
 
 

@@ -114,7 +114,7 @@ UnoDosOne
 
 GitHub: @UnoDosOne
 
-Email: [your.email@example.com]
+Email: lesgoqueueease@gmail.com
 
 ## 📬 Feedback or Contributions?
 Feel free to submit an issue or pull request. Contributions are always welcome!
